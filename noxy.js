@@ -4,7 +4,7 @@ var zlib = require('zlib');
 var url = require('url');
 var through = require('through');
 
-var mainhost = process.env.HOST || 'localhost';
+var mainhost = process.env.HOST || 'noxy-app.herokuapp.com';
 var getEncoding = require('./src/bufferEncoding');
 var noxyLanding = require('./src/noxyLanding');
 
