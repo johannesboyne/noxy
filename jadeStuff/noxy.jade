@@ -24,4 +24,5 @@ html
     center
       h1 #{name}
       input(id='url', type='url', placeholder='type your url here...', onkeypress='call(event)', autocapitalize='off', autocorrection='off')
-      a(onclick='call({charCode: 13}, false)') load without images
+      a(onclick='call({charCode: 13}, true)') go
+      a(style="margin-left: 10px;" onclick='call({charCode: 13}, false)') without images
