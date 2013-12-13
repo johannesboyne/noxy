@@ -63,11 +63,11 @@ http.createServer(function (req, res) {
           for (var l = 0; l < lines.length; l++) {
             var line = lines[l];
             if (line.match(/(src\=\"\/\/)/g)) {
-              line = line.replace(/(src\=\"\/\/)/g, 'src="http://'+mainhost+':1337/?url=http://');
+              line = line.replace(/(src\=\"\/\/)/g, 'src="http://'+mainhost+'/?url=http://');
             } else if (line.match(/(src=")(?!http\:\/\/)/g)) {
-              line = line.replace(/(src=")(?!http\:\/\/)/g, 'src="http://'+mainhost+':1337/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
+              line = line.replace(/(src=")(?!http\:\/\/)/g, 'src="http://'+mainhost+'/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
             } else if (line.match(/(href=")(?!http\:\/\/)/g)) {
-              line = line.replace(/(href=")(?!http\:\/\/)/g, 'href="http://'+mainhost+':1337/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
+              line = line.replace(/(href=")(?!http\:\/\/)/g, 'href="http://'+mainhost+'/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
             }
             if (_url.query.img === "false") {
               if (line.match(/(<img)/g)) {
