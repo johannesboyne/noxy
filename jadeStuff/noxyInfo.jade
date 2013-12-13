@@ -1,0 +1,43 @@
+!!!
+html
+  head
+    meta(charset="utf-8")
+    meta(name='viewport', content='width=device-width, user-scalable=no')
+    title= name
+    include style
+    script.
+      window.scrollTo(0);
+  body
+    center
+      h1 #{name}
+      p.
+        <font color="#007AFF">noxy</font> is a tool that helps you to reduce your monthly mobile 
+        traffic by minimizing the size of web pages.
+      p.
+        This is done by <font color="#111">gzipping</font> the contents and/or excluding pictures.
+      p.
+        Using this techniques noxy can reduce website sizes quite good. Look at the savings:
+    ul
+      b 
+        a(href="http://nodejs.org") http://nodejs.org
+      li normal:  ~ 93.00 KB
+      li noxy:    ~ 73.00 KB
+      li noxy (without images): ~ 32.00 KB
+    ul(style="margin-top: 10px;")
+      b 
+        a(href="http://en.wikipedia.org/wiki/Computer_science") http://en.wikipedia.org/wiki/Computer_science
+      li normal:  ~ 1.1 MB
+      li noxy:    ~ 810 KB
+      li noxy (without images): ~ 79 KB
+    ul(style="margin-top: 10px;")
+      b 
+        a(href="http://www.nytimes.com") http://www.nytimes.com
+      li normal:  ~ 1.7 MB
+      li noxy:    ~ 1.4 MB
+      li noxy (without images): ~ 995 KB
+    center
+      p.
+        <font size="2">© 2013 <a href="#">Johannes Boyne</a></font>
+        <font color="#007AFF" size="30px">⬡</font>
+    .gh
+      <a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>

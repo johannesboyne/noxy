@@ -1,30 +1,12 @@
 var http = require('http');
 var https = require('https');
 var zlib = require('zlib');
-var request = require('request');
 var url = require('url');
-var readline = require('readline');
-var StringDecoder = require('string_decoder').StringDecoder;
 var through = require('through');
-var jade = require('jade');
-var fs = require('fs');
 
 var mainhost = process.env.HOST || 'localhost';
-
-function getEncoding (buffer) {
-  var charCode, contentStartBinary, contentStartUTF8, encoding, i, _i, _ref;
-  contentStartBinary = buffer.toString('binary', 0, 24);
-  contentStartUTF8 = buffer.toString('utf8', 0, 24);
-  encoding = 'utf8';
-  for (i = _i = 0, _ref = contentStartUTF8.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-    charCode = contentStartUTF8.charCodeAt(i);
-    if (charCode === 65533 || charCode <= 8) {
-      encoding = 'binary';
-      break;
-    }
-  }
-  return encoding;
-}
+var getEncoding = require('./src/bufferEncoding');
+var noxyLanding = require('./src/noxyLanding');
 
 function getter (protocol) {
   if (protocol === 'http:')
@@ -33,15 +15,20 @@ function getter (protocol) {
     return https;
 }
 
+var gzippedHtml, gzippedHtmlInfo;
+noxyLanding(function (landing, info) {
+  gzippedHtml = landing;
+  gzippedHtmlInfo = info;
+});
+
 http.createServer(function (req, res) {
-  var html = jade.renderFile('./noxy.jade', {pretty: false, name: 'noxy'});
   if (req.url.slice(0,6) !== '/?url=') {
-    var ts = through(function write (data) { this.emit('data', data); }, function end () { this.emit('end'); });
-    // ts.pipe(zlib.createGzip({level: zlib.Z_BEST_COMPRESSION})).pipe(res);
-    ts.pipe(res);
-    // res.writeHead(200, {'content-encoding': 'gzip', 'content-type': 'text/html'});
-    res.writeHead(200, {'content-type': 'text/html'});
-    ts.end(html);
+    res.writeHead(200, {'content-encoding': 'gzip', 'content-type': 'text/html'});
+    if (req.url != '/info') {
+      res.end(gzippedHtml);
+    } else {
+      res.end(gzippedHtmlInfo);
+    }
   } else {
     var _url = url.parse(req.url, true);
     var parsed = url.parse(_url.query.url, true);
@@ -65,7 +52,6 @@ http.createServer(function (req, res) {
       var ts = through(function write (data) { this.emit('data', data); }, function end () { this.emit('end'); });
 
       var buffer = "";
-      var decoder = new StringDecoder('utf8');
       pres.on('data', function (data) {
         if (data.slice(0,1).toString() === '�') {
           ts.write(data);
@@ -76,7 +62,9 @@ http.createServer(function (req, res) {
           
           for (var l = 0; l < lines.length; l++) {
             var line = lines[l];
-            if (line.match(/(src=")(?!http\:\/\/)/g)) {
+            if (line.match(/(src\=\"\/\/)/g)) {
+              line = line.replace(/(src\=\"\/\/)/g, 'src="http://'+mainhost+':1337/?url=http://');
+            } else if (line.match(/(src=")(?!http\:\/\/)/g)) {
               line = line.replace(/(src=")(?!http\:\/\/)/g, 'src="http://'+mainhost+':1337/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
             } else if (line.match(/(href=")(?!http\:\/\/)/g)) {
               line = line.replace(/(href=")(?!http\:\/\/)/g, 'href="http://'+mainhost+':1337/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
@@ -86,7 +74,7 @@ http.createServer(function (req, res) {
                 line = line.replace(/(<img)/g, '<img_');
               }
             }
-            ts.write(line);
+            ts.write(line+'\r\n');
           }
         } else {
           ts.write(data);
@@ -101,4 +89,4 @@ http.createServer(function (req, res) {
       ts.pipe(zlib.createGzip({level: zlib.Z_BEST_COMPRESSION})).pipe(res);
     }).end();
   }
-}).listen(1337);
+}).listen(process.env.PORT);

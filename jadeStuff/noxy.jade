@@ -1,0 +1,27 @@
+!!!
+html
+  head
+    meta(charset="utf-8")
+    meta(name='viewport', content='width=device-width, user-scalable=no')
+    title= name
+    include style
+    script.
+      window.scrollTo(0);
+      function call (e,bool) {
+        if (e.charCode === 13) {
+          if (!document.getElementById('url').value.match(/(http:\/\/)|(https:\/\/)/))
+            document.getElementById('url').value = 'http://'+document.getElementById('url').value;
+          if (bool === false) {
+            document.getElementById('url').value += '&img=false';
+          }
+          window.location.href = 'http://'+location.host+'/?url=' + document.getElementById('url').value;
+        }
+      }
+  body
+    .question
+      span.what what's noxy →
+      a.ico(href='/info') ☰
+    center
+      h1 #{name}
+      input(id='url', type='url', placeholder='type your url here...', onkeypress='call(event)', autocapitalize='off', autocorrection='off')
+      a(onclick='call({charCode: 13}, false)') load without images
