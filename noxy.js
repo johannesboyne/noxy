@@ -35,6 +35,7 @@ http.createServer(function (req, res) {
     var hostname = parsed.hostname;
     var path = parsed.path.replace(/\/\//g, '/');
     var protocol = parsed.protocol;
+    var _p = protocol.replace(':', '');
     
     var options = {
       hostname: hostname,
@@ -62,12 +63,12 @@ http.createServer(function (req, res) {
           
           for (var l = 0; l < lines.length; l++) {
             var line = lines[l];
-            if (line.match(/(src\=\"\/\/)/g)) {
-              line = line.replace(/(src\=\"\/\/)/g, 'src="http://'+mainhost+'/?url=http://');
-            } else if (line.match(/(src=")(?!http\:\/\/)/g)) {
-              line = line.replace(/(src=")(?!http\:\/\/)/g, 'src="http://'+mainhost+'/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
-            } else if (line.match(/(href=")(?!http\:\/\/)/g)) {
-              line = line.replace(/(href=")(?!http\:\/\/)/g, 'href="http://'+mainhost+'/?url=http://'+url.parse(_url.query.url, true).hostname+'/');
+            if (line.match(new RegExp('(src\=\"\/\/)', 'g'))) {
+              line = line.replace(new RegExp('(src\=\"\/\/)', 'g'), 'src="'+_p+'://'+mainhost+'/?url='+_p+'://');
+            } else if (line.match(new RegExp('(src=")(?!'+_p+'\:\/\/)', 'g'))) {
+              line = line.replace(new RegExp('(src=")(?!'+_p+'\:\/\/)', 'g'), 'src="'+_p+'://'+mainhost+'/?url='+_p+'://'+url.parse(_url.query.url, true).hostname+'/');
+            } else if (line.match(new RegExp('(href=")(?!'+_p+'\:\/\/)', 'g'))) {
+              line = line.replace(new RegExp('(href=")(?!'+_p+'\:\/\/)', 'g'), 'href="'+_p+'://'+mainhost+'/?url='+_p+'://'+url.parse(_url.query.url, true).hostname+'/');
             }
             if (_url.query.img === "false") {
               if (line.match(/(<img)/g)) {
