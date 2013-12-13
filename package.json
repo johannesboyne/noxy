@@ -1,7 +1,6 @@
 {
-  "name": "noxy-app",
-  "subdomain": "noxy-app",
-  "version": "0.0.1",
+  "name": "noxy",
+  "version": "0.0.2",
   "description": "Node sample gzip proxy",
   "main": "noxy.js",
   "scripts": {
