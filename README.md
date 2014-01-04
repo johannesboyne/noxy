@@ -22,3 +22,10 @@ Look at the savings:
  * normal:  ~ 1.7 MB
  * noxy:    ~ 1.4 MB
  * noxy (without images): ~ 995 KB
+
+## Further Improvements
+
+* Change http/https handling
+* Change JavaScript / CSS / Image handling
+* Better Interface
+* Optional HTTP-Proxy connection for devices
